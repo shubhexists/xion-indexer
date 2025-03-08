@@ -1,0 +1,48 @@
+{
+  "name": "xion-indexer",
+  "version": "1.0.0",
+  "description": "This is the indexer solution for the xion chain",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "subql build",
+    "build:docker": "dotenv -c docker subql build",
+    "codegen": "subql codegen",
+    "subql:publish": "subql publish",
+    "start:docker": "docker-compose pull && docker-compose up --remove-orphans",
+    "dev": "docker compose down && subql codegen && dotenv -c docker subql build && docker compose build --no-cache && docker-compose up --remove-orphans",
+    "prepack": "rm -rf dist && yarn run build",
+    "test": "subql build && subql-node-cosmos test",
+    "start": "./node_modules/@subql/node-cosmos/bin/run",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "homepage": "https://xion.burnt.com/",
+  "repository": "github:burnt-labs/xion-indexer.git",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "project.yaml"
+  ],
+  "author": "Burnt Labs Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@cosmjs/stargate": "^0.28.9",
+    "@subql/cli": "^4.13.1",
+    "@subql/node-cosmos": "latest",
+    "@subql/testing": "latest",
+    "@types/uuid": "^9.0.5",
+    "dotenv": "^16.3.1",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@subql/types-cosmos": "latest",
+    "@types/node": "^17.0.21",
+    "dotenv-cli": "^8.0.0",
+    "osmojs": "^15.2.1",
+    "pino": "^7.8.0",
+    "ts-proto": "^1.112.1",
+    "tslib": "^2.3.1",
+    "uuid": "^9.0.1"
+  }
+}

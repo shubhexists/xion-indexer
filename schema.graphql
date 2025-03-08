@@ -1,0 +1,17 @@
+# To improve query performance, we strongly suggest adding indexes to any field that you plan to filter or sort by
+# Add the `@index` or `@index(unique: true)` annotation after any non-key field
+# https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
+type SmartAccount @entity {
+  id: ID! # The smart wallet contract address
+  latestAuthenticatorId: Int! # The id of the latest authenticator
+  authenticators: [SmartAccountAuthenticator]! @derivedFrom(field: "account") # This is a lookup for the authenticators
+}
+
+type SmartAccountAuthenticator @entity {
+  id: ID!
+  account: SmartAccount! # This is a lookup for the smart account
+  type: String! # The type of authentication e.g. Secp256k1, Ed25519, etc.
+  authenticator: String! # The identifier of the authenticator (e.g. public key, JWT aud-sub pair, etc.)
+  authenticatorIndex: Int! # The index of the authenticator on the smart account
+  version: String! # The version of the authenticator
+}

@@ -1,0 +1,62 @@
+syntax = "proto3";
+package abstractaccount.v1;
+
+import "abstractaccount/v1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/larry0x/abstract-account/x/abstractaccount/types";
+
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // Update the module's parameters. Can only be called by the authority.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // Register a new AbstractAccount.
+  rpc RegisterAccount(MsgRegisterAccount) returns (MsgRegisterAccountResponse);
+}
+
+// ------------------------------- UpdateParams --------------------------------
+
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  string sender = 1;
+  Params params = 2;
+}
+
+message MsgUpdateParamsResponse {}
+
+// ------------------------------ RegisterAccount ------------------------------
+
+message MsgRegisterAccount {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // Sender is the actor who signs the message
+  string sender  = 1;
+
+  // CodeID indicates which wasm binary code is to be used for this contract
+  uint64 code_id = 2 [(gogoproto.customname) = "CodeID"];
+
+  // Msg is the JSON-encoded instantiate message for the contract
+  bytes msg = 3 [
+    (gogoproto.casttype) = "github.com/CosmWasm/wasmd/x/wasm/types.RawContractMessage"
+  ];
+
+  // Funds are coins to be deposited to the contract on instantiattion
+  repeated cosmos.base.v1beta1.Coin funds = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  // Salt is an arbinary value to be used in deriving the account address.
+  // Max 64 bytes.
+  bytes salt = 5;
+}
+
+message MsgRegisterAccountResponse {
+  string address = 1;
+  bytes  data    = 2;
+}
